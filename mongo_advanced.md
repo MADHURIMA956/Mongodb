@@ -143,19 +143,19 @@ Mongodb :
          db.movies.find({ "production_year" : {$in : [ 2000 ,2001 ,2002,2003,2004,2005,2006,2007,2008,2009,2010 ] } } , {"movie_name" : 1 , "production_year" : 1 , "_id" : 0} ).pretty(); 
 
 
-Q.10 ) find all movies that are not produced in 2000 or they do not have budget of 10000
+Q.10 ) Sort all movies descending based on the production year and if the year is same then alphabetically for their movie_names
 
 SQL : 
 
      A ) Command :
 
-    select movie_name , production_year from movies where production_year != 2000 OR budget != 10000 ;
+    select movie_name , production_year from movies where order by production_year
 
 Mongodb :
 
     A ) Command : 
 
-          db.movies.find( { $or : [ { "production_year" : { $nin : [ 2000 ] } } , { "budget" : { $nin : [ 10000 ] }  } ] }, {"movie_name" : 1 , "production_year" : 1 , "_id" : 0} ).pretty(); 
+          db.movies.find( {} , {"movie_name" : 1 , "production_year" : 1 , "_id" : 0} ).sort({production_year : -1 , movie_name : -1}).pretty(); 
 
 
 Q.11 ) in query 10 skip the first 10 entries and fetch the next 5
@@ -164,13 +164,13 @@ SQL :
 
      A ) Command :
 
-    select movie_name , production_year from movies where production_year != 2000 OR budget != 10000 offset 5 rows limit 5;
+    select movie_name , production_year from movies order by production_year ,movie_name desc offset 5 rows limit 5;
 
 Mongodb :
 
     A ) Command : 
 
-          db.movies.find( { $or : [ { "production_year" : { $nin : [ 2000 ] } } , { "budget" : { $nin : [ 10000 ] }  } ] }, {"movie_name" : 1 , "production_year" : 1 , "_id" : 0} ).skip(10).limit(5).pretty(); 
+            db.movies.find( {} , {"movie_name" : 1 , "production_year" : 1 , "_id" : 0} ).sort({production_year : -1 , movie_name : -1}).skip(10).limit(5).pretty(); 
 
 
 Q.12 ) remove movie genre from the first 10 movies in query 10.
@@ -179,12 +179,14 @@ SQL :
 
      A ) Command :
 
-   ALTER TABLE "table_name" DROP COLUMN "column_name" limit 10;
+   ALTER TABLE "table_name" DROP COLUMN  limit 10;
 
 Mongodb :
 
     A ) Command : 
 
-          db.movies.update( { $or : [ { "production_year" : { $nin : [ 2000 ] } } , { "budget" : { $nin : [ 10000 ] }  } ] }, { $unset : {"movie_genre" = ""} } )
+         db.movies.find( {} ).sort({production_year : -1 , movie_name : -1}).limit(10).pretty().forEach(function(doc){ db.movies.update({ _id : doc._id} , { $unset: {"movie_genre" : ""}}) })
 
-          db.movies.find( { $or : [ { "production_year" : { $nin : [ 2000 ] } } , { "budget" : { $nin : [ 10000 ] }  } ] }, {"movie_name" : 1 , "production_year" : 1 , "_id" : 0} ).skip(10).limit(5).pretty();
+        db.movies.find( {} , {"movie_name" : 1 , "production_year" : 1 , "_id" : 0} ).sort({production_year : -1 , movie_name : -1})limit(15).pretty()
+
+

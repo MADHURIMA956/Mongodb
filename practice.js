@@ -15,11 +15,11 @@ const connect = () => {
 //step 2
 const userSchema = new mongoose.Schema({
 
-    
-    movie_name : { type: String , required: true ,unique: true},
-    movie_genre : { type: String , required: false },
-    production_year  : { type: Number , required: true , default: 2000 },
-    budget  : { type: Number , required: true}
+    first_name : { type: String , required: true},
+    last_name : { type: String , required: false},
+    email : { type: String , required: true, unique: true},
+    gender : { type: String , required: false , default: 'Male' },
+    age : { type: Number , required: true}
 }, {
     versionKey : false,
     timestamps : true,
@@ -27,11 +27,11 @@ const userSchema = new mongoose.Schema({
 );
  
 //step 3 
-const User = mongoose.model('movies' , userSchema);  // collection name , schema name
+const User = mongoose.model('users' , userSchema);  // collection name , schema name
 
 //post
 
-app.post('/movies' , async (req, res) => {
+app.post('/users' , async (req, res) => {
     //thenable
 
     try {
@@ -45,7 +45,7 @@ app.post('/movies' , async (req, res) => {
 
 // get 
 
-app.get('/movies' , async (req, res) => {
+app.get('/users' , async (req, res) => {
     //thenable
 
     try {
@@ -58,7 +58,7 @@ app.get('/movies' , async (req, res) => {
 
 //get single
 
-app.get('/movies/:id' , async (req, res) => {
+app.get('/users/:id' , async (req, res) => {
     //thenable
 
     let idd = req.params.id
@@ -74,7 +74,7 @@ app.get('/movies/:id' , async (req, res) => {
 
 //patch
 
-app.patch('/movies/:id' , async (req, res) => {
+app.patch('/users/:id' , async (req, res) => {
     //thenable
     let idd =  req.params.id 
     try {
@@ -89,7 +89,7 @@ app.patch('/movies/:id' , async (req, res) => {
 
 // delete users
 
-app.delete('/movies/:id' , async (req, res) => {
+app.delete('/users/:id' , async (req, res) => {
     //thenable
     let idd =  req.params.id 
     try {
